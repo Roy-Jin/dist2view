@@ -1,0 +1,63 @@
+/* Dist2View Demo Template — 纯内联样式，零外部依赖 */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: #09090b;
+  color: #f4f4f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem 2rem;
+  background-image: linear-gradient(135deg, rgba(99,102,241,0.04) 0%, rgba(168,85,247,0.04) 100%);
+}
+
+/* Header */
+header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem; }
+.brand { display: flex; align-items: center; gap: 0.75rem; }
+.brand-icon {
+  width: 2rem; height: 2rem; border-radius: 0.5rem; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2);
+  display: flex; align-items: center; justify-content: center; color: #818cf8; font-size: 0.85rem;
+}
+.brand-name { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; }
+.status-badge {
+  font-size: 0.625rem; font-family: monospace; color: #71717a; background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05); padding: 0.25rem 0.6rem; border-radius: 0.5rem;
+}
+
+/* Main */
+main { max-width: 36rem; margin: auto 0; display: flex; flex-direction: column; gap: 2rem; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 300; line-height: 1.15; letter-spacing: -0.02em; color: #fff; }
+.hero .highlight { font-weight: 400; color: #818cf8; }
+.hero p { font-size: 0.875rem; color: #a1a1aa; max-width: 24rem; line-height: 1.7; margin-top: 1rem; font-weight: 300; }
+
+/* Buttons */
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.btn {
+  padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; border: none; transition: all 0.15s ease;
+}
+.btn-primary { background: #4f46e5; color: #fff; box-shadow: 0 4px 14px rgba(79,70,229,0.15); }
+.btn-primary:hover { background: #6366f1; }
+.btn-secondary { background: #18181b; color: #a1a1aa; border: 1px solid rgba(255,255,255,0.05); }
+.btn-secondary:hover { background: #27272a; color: #d4d4d8; }
+
+/* Stats */
+.stats { display: flex; gap: 1rem; flex-wrap: wrap; }
+.stat-card {
+  flex: 1; min-width: 6rem; padding: 1rem 1.25rem; border-radius: 0.75rem;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+}
+.stat-value { display: block; font-size: 1.25rem; font-weight: 700; color: #fff; }
+.stat-label { display: block; font-size: 0.625rem; color: #71717a; margin-top: 0.25rem; font-family: monospace; }
+
+/* Footer */
+footer {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;
+  border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;
+  font-size: 0.625rem; font-family: monospace; color: #52525b;
+}
+
+/* Selection */
+::selection { background: rgba(99,102,241,0.25); color: #fff; }

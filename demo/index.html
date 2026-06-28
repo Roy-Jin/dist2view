@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dist2View 演示模板</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-icon">✦</div>
+      <span class="brand-name">Dist2View</span>
+    </div>
+    <span class="status-badge">沙盒运行中</span>
+  </header>
+
+  <main>
+    <div class="hero">
+      <h1>静态构建包<br><span class="highlight">即时预览</span></h1>
+      <p>零服务器、零上传、即时预览。纯浏览器本地解压、渲染与编辑，所有代码安全地运行在你的设备上。</p>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="console.log('你好！这是一条 console.log 消息'); alert('控制台事件已触发，请查看控制台信息')">触发日志</button>
+      <button class="btn btn-secondary" onclick="console.warn('这是一条模拟的警告日志')">模拟警告</button>
+      <button class="btn btn-secondary" onclick="console.error('这是一条模拟的错误日志'); console.table([{名称:'Dist2View',类型:'预览器',状态:'运行中'},{名称:'沙盒',类型:'隔离环境',状态:'正常'}])">模拟错误</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-value">0ms</span>
+        <span class="stat-label">服务器延迟</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">100%</span>
+        <span class="stat-label">沙盒隔离</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">0</span>
+        <span class="stat-label">网络请求</span>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 Dist2View — 纯前端静态包预览器</span>
+    <span>Service Worker 沙盒隔离</span>
+  </footer>
+
+  <script>
+    console.info('Dist2View 演示模板已加载');
+    console.debug('调试模式：所有 console 方法均已被拦截记录');
+  </script>
+</body>
+</html>
