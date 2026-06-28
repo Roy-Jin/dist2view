@@ -1,4 +1,4 @@
-/* Dist2View Demo Template — 纯内联样式，零外部依赖 */
+/* Dist2View Demo Template — inline styles only, zero external dependencies */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {

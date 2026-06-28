@@ -1,5 +1,5 @@
-// 将 demo/ 目录打包为 public/demo.zip
-// 使用 fflate（项目已有依赖），无需任何外部 CLI 工具
+// Pack the demo/ directory into public/demo.zip
+// Uses fflate (existing project dependency), no external CLI tools required
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -34,8 +34,8 @@ if (allFiles.length === 0) {
 
 const zipData = {};
 for (const file of allFiles) {
-  // 扁平化路径：去掉 demo/ 前缀，使 index.html 位于 zip 根目录
-  // 同时把 Windows 反斜杠归一化为正斜杠
+  // Flatten paths: strip the demo/ prefix so index.html sits at the zip root
+  // Also normalize Windows backslashes to forward slashes
   const rel = relative(demoDir, file).replace(/\\/g, '/');
   const buf = await readFile(file);
   zipData[rel] = new Uint8Array(buf);

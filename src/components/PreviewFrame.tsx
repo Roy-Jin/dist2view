@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  RefreshCw, 
-  ExternalLink, 
+import {
+  RefreshCw,
+  ExternalLink,
   Globe,
   Loader2
 } from 'lucide-react';
@@ -20,11 +20,11 @@ interface PreviewFrameProps {
   hideHeader?: boolean;
 }
 
-export default function PreviewFrame({ 
-  sandboxId, 
-  addressPath, 
+export default function PreviewFrame({
+  sandboxId,
+  addressPath,
   setAddressPath,
-  onAddLog, 
+  onAddLog,
   htmlFiles = [],
   onTitleChange,
   hideHeader = false
@@ -40,7 +40,7 @@ export default function PreviewFrame({
   // When sandboxId or addressPath changes, load the iframe
   useEffect(() => {
     if (!sandboxId) return;
-    
+
     setIsLoading(true);
     if (iframeRef.current) {
       iframeRef.current.src = fullPreviewUrl;
@@ -209,34 +209,34 @@ export default function PreviewFrame({
 
   return (
     <div className={`flex flex-col h-full bg-slate-950/20 ${hideHeader ? '' : 'border border-white/5 rounded-2xl'} overflow-hidden shadow-2xl relative`}>
-      
+
       {/* Minimalist Address bar & Controller */}
       {!hideHeader && (
         <div className="px-4 py-2.5 bg-slate-950/40 border-b border-white/5 flex flex-wrap items-center justify-between gap-3 shrink-0">
-          
+
           {/* Dynamic Document Title with pulsing status */}
           <div className="flex items-center gap-1.5 bg-white/2 border border-white/5 px-2.5 py-1.5 rounded-xl text-slate-300 text-xs font-semibold shrink-0 select-none">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-            <span className="max-w-[180px] truncate font-mono tracking-tight" title={docTitle || addressPath}>
+            <span className="max-w-45 truncate font-mono tracking-tight" title={docTitle || addressPath}>
               {docTitle || addressPath}
             </span>
           </div>
 
           {/* Address URL Input bar */}
-          <form onSubmit={handleAddressSubmit} className="flex-1 min-w-[200px] max-w-xl flex items-center">
+          <form onSubmit={handleAddressSubmit} className="flex-1 min-w-50 max-w-xl flex items-center">
             <div className="relative w-full flex items-center">
               <Globe className="w-3.5 h-3.5 text-slate-600 absolute left-3" />
               <span className="text-[10px] font-mono font-medium text-slate-500 absolute left-8 select-none">
                 preview/
               </span>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={addressPath}
                 onChange={(e) => setAddressPath(e.target.value)}
-                placeholder="index.html" 
-                className="w-full bg-slate-950/30 border border-white/5 focus:border-indigo-500/30 rounded-xl pl-[84px] pr-20 py-1.5 text-xs text-slate-300 placeholder-slate-600 focus:outline-none font-mono"
+                placeholder="index.html"
+                className="w-full bg-slate-950/30 border border-white/5 focus:border-indigo-500/30 rounded-xl pl-21 pr-20 py-1.5 text-xs text-slate-300 placeholder-slate-600 focus:outline-none font-mono"
               />
-              
+
               {/* Quick Action Buttons */}
               <div className="absolute right-2 flex items-center gap-1">
                 <button
@@ -270,7 +270,7 @@ export default function PreviewFrame({
 
       {/* Frame Visual Area */}
       <div className="flex-1 bg-slate-950/10 flex items-center justify-center p-0 overflow-hidden relative">
-        
+
         {/* Loading overlay */}
         {isLoading && (
           <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center gap-3 z-30 backdrop-blur-md">
@@ -285,7 +285,7 @@ export default function PreviewFrame({
           onLoad={handleIframeLoad}
           sandbox={IFRAME_SANDBOX_POLICY}
           className="w-full h-full border-none bg-white"
-          title="Static Output Frame"
+          title={t('staticOutputFrame')}
           id="preview-iframe-element"
         />
       </div>

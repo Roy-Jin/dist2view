@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Save, Code, Image as ImageIcon, Sparkles, FileText } from 'lucide-react';
 import Editor, { OnMount, BeforeMount } from '@monaco-editor/react';
-import type { Monaco } from '@monaco-editor/react';
 import { VirtualFile } from '../types';
 import { getMimeType, formatBytes } from '../utils';
 import { useI18n } from '../i18n/I18nContext';
 
-// 自定义主题：仅定义一次，避免重复 defineTheme
+// Custom theme: define once to avoid repeated defineTheme calls
 const THEME_NAME = 'dist2view-dark';
 let themeDefined = false;
 
@@ -31,8 +30,8 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
     }
 
     if (!file.isBinary) {
-      const text = file.textContent !== undefined 
-        ? file.textContent 
+      const text = file.textContent !== undefined
+        ? file.textContent
         : new TextDecoder('utf-8').decode(file.content);
       setCode(text);
       setIsModified(false);
@@ -43,7 +42,7 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
         const blob = new Blob([new Uint8Array(file.content)], { type: mimeType });
         const url = URL.createObjectURL(blob);
         setImageUrl(url);
-        
+
         return () => {
           URL.revokeObjectURL(url);
           setImageUrl(null);
@@ -69,13 +68,13 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
   };
 
   const handleBeforeMount: BeforeMount = (monaco) => {
-    // 主题仅定义一次（多个编辑器实例共享同一个 monaco runtime）
+    // Define theme once (multiple editor instances share the same monaco runtime)
     if (!themeDefined) {
       monaco.editor.defineTheme(THEME_NAME, {
         base: 'vs-dark',
         inherit: true,
         rules: [
-          { token: '', foreground: 'cbd5e1' }, // slate-300 默认前景
+          { token: '', foreground: 'cbd5e1' }, // slate-300 default foreground
           { token: 'comment', foreground: '64748b', fontStyle: 'italic' }, // slate-500
           { token: 'keyword', foreground: '818cf8' }, // indigo-400
           { token: 'operator', foreground: '94a3b8' }, // slate-400
@@ -97,7 +96,7 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
           { token: 'invalid', foreground: 'f87171' }, // red-400
         ],
         colors: {
-          // 编辑器底色：透明，让页面径向渐变透出
+          // Editor background: transparent to let the page radial gradient show through
           'editor.background': '#03071200',
           'editor.foreground': '#cbd5e1',
           'editorGutter.background': '#03071200',
@@ -150,7 +149,7 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
   const handleMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
 
-    // Ctrl/Cmd + S 保存
+    // Ctrl/Cmd + S to save
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       const value = editor.getValue();
       if (file) {
@@ -164,7 +163,7 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
     const next = value ?? '';
     setCode(next);
     if (file) {
-      // 与原始 textContent 对比，避免刚加载就被标记为已修改
+      // Compare against original textContent to avoid flagging as modified right after load
       const original = file.textContent ?? '';
       setIsModified(next !== original);
     } else {
@@ -215,11 +214,10 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
               <button
                 onClick={handleSaveClick}
                 disabled={!isModified}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all shadow-md ${
-                  isModified 
-                    ? 'bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer' 
-                    : 'bg-white/2 text-slate-500 cursor-not-allowed border border-white/5'
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all shadow-md ${isModified
+                  ? 'bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer'
+                  : 'bg-white/2 text-slate-500 cursor-not-allowed border border-white/5'
+                  }`}
               >
                 <Save className="w-3.5 h-3.5" />
                 {t('saveAndSync')}
@@ -252,12 +250,12 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
           <div className="flex-1 h-full flex flex-col items-center justify-center p-8 bg-slate-900/20">
             {imageUrl ? (
               <div className="flex flex-col items-center justify-center gap-4">
-                <div className="relative group max-w-full max-h-[350px] overflow-hidden rounded-lg border border-slate-800 bg-slate-950 p-2 shadow-inner">
-                  <img 
-                    src={imageUrl} 
-                    alt={file.path} 
+                <div className="relative group max-w-full max-h-87.5 overflow-hidden rounded-lg border border-slate-800 bg-slate-950 p-2 shadow-inner">
+                  <img
+                    src={imageUrl}
+                    alt={file.path}
                     referrerPolicy="no-referrer"
-                    className="max-w-full max-h-[300px] object-contain rounded grid-pattern"
+                    className="max-w-full max-h-75 object-contain rounded grid-pattern"
                   />
                 </div>
                 <div className="text-center">

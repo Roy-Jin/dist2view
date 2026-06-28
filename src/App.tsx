@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Upload, 
-  FolderOpen, 
+import {
+  Upload,
+  FolderOpen,
   Loader2,
   CheckCircle,
   FolderClosed,
   FolderOpen as FolderOpenIcon,
   Terminal,
-  Play,
-  ArrowRight,
   Download,
-  RotateCcw,
   X,
   FileCode,
   Sparkles,
@@ -24,9 +21,9 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { VirtualFile, ConsoleLog } from './types';
-import { 
-  isBinaryFile, 
-  getMimeType 
+import {
+  isBinaryFile,
+  getMimeType
 } from './utils';
 import PreviewFrame from './components/PreviewFrame';
 import FileTree from './components/FileTree';
@@ -52,7 +49,7 @@ export default function App() {
   const [isSwRegistered, setIsSwRegistered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
-  
+
   // Layout toggle states
   const [hasUploaded, setHasUploaded] = useState(false);
   const [showFileTree, setShowFileTree] = useState(true);
@@ -94,7 +91,7 @@ export default function App() {
   // Helper: Decode files and put into sandboxed cache
   const loadSandboxWithFiles = async (newFiles: VirtualFile[], customSandboxId: string, sourceName: string) => {
     const cache = await caches.open(buildCacheName(customSandboxId));
-    
+
     const promises = newFiles.map(async (file) => {
       const requestUrl = buildSandboxUrl(customSandboxId, file.path);
       const response = new Response(file.content, {
@@ -112,7 +109,7 @@ export default function App() {
     const htmlFilePaths = newFiles
       .map(f => f.path)
       .filter(p => p.toLowerCase().endsWith('.html') || p.toLowerCase().endsWith('.htm'));
-    
+
     let defaultPath = 'index.html';
     if (htmlFilePaths.length > 0) {
       const indexMatch = htmlFilePaths.find(p => p.toLowerCase() === 'index.html' || p.toLowerCase().endsWith('/index.html'));
@@ -247,7 +244,7 @@ export default function App() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const file = e.dataTransfer.files?.[0];
     if (file && file.name.endsWith('.zip')) {
       const reader = new FileReader();
@@ -300,7 +297,7 @@ export default function App() {
         }
       });
       await cache.put(requestUrl, response);
-      
+
       setLogs(prev => [...prev, {
         type: 'info',
         message: t('hotSwapped', { path }),
@@ -317,7 +314,7 @@ export default function App() {
       const cache = await caches.open(buildCacheName(sandboxId));
       const requestUrl = buildSandboxUrl(sandboxId, path);
       await cache.delete(requestUrl);
-      
+
       setLogs(prev => [...prev, {
         type: 'warn',
         message: t('deletedFile', { path }),
@@ -361,10 +358,10 @@ export default function App() {
         }
       });
       await cache.put(newRequestUrl, response);
-      
+
       setLogs(prev => [...prev, {
         type: 'info',
-        message: `重命名文件: ${oldPath} -> ${newPath}`,
+        message: t('renamedFile', { oldPath, newPath }),
         timestamp: new Date().toLocaleTimeString()
       }]);
     }
@@ -383,7 +380,7 @@ export default function App() {
     const newPrefix = newFolderPath.endsWith('/') ? newFolderPath : `${newFolderPath}/`;
 
     if (files.some(f => f.path.startsWith(newPrefix))) {
-      alert('目录或同名文件已存在');
+      alert(t('folderOrFileExists'));
       return;
     }
 
@@ -401,7 +398,7 @@ export default function App() {
 
     if (sandboxId) {
       const cache = await caches.open(buildCacheName(sandboxId));
-      
+
       const affectedFiles = files.filter(f => f.path.startsWith(oldPrefix));
       for (const f of affectedFiles) {
         const oldRequestUrl = buildSandboxUrl(sandboxId, f.path);
@@ -421,7 +418,7 @@ export default function App() {
 
       setLogs(prev => [...prev, {
         type: 'info',
-        message: `重命名文件夹: ${oldFolderPath} -> ${newFolderPath}`,
+        message: t('renamedFolder', { oldFolderPath, newFolderPath }),
         timestamp: new Date().toLocaleTimeString()
       }]);
     }
@@ -438,7 +435,7 @@ export default function App() {
     const prefix = folderPath.endsWith('/') ? folderPath : `${folderPath}/`;
     const filesToDelete = files.filter(f => f.path.startsWith(prefix));
     const updatedFiles = files.filter(f => !f.path.startsWith(prefix));
-    
+
     setFiles(updatedFiles);
 
     if (sandboxId) {
@@ -450,7 +447,7 @@ export default function App() {
 
       setLogs(prev => [...prev, {
         type: 'warn',
-        message: `已删除文件夹 ${folderPath} 及其下的所有文件`,
+        message: t('deletedFolder', { folderPath }),
         timestamp: new Date().toLocaleTimeString()
       }]);
     }
@@ -463,7 +460,7 @@ export default function App() {
   const handleCreateFolder = async (folderPath: string) => {
     const keepPath = folderPath.endsWith('/') ? `${folderPath}.keep` : `${folderPath}/.keep`;
     if (files.some(f => f.path === keepPath)) {
-      alert('该文件夹已存在');
+      alert(t('folderExists'));
       return;
     }
     const defaultContent = `/* Folder keep file for: ${folderPath} */\n`;
@@ -489,10 +486,10 @@ export default function App() {
         }
       });
       await cache.put(requestUrl, response);
-      
+
       setLogs(prev => [...prev, {
         type: 'info',
-        message: `新建文件夹: ${folderPath}`,
+        message: t('createdFolder', { folderPath }),
         timestamp: new Date().toLocaleTimeString()
       }]);
     }
@@ -527,7 +524,7 @@ export default function App() {
         }
       });
       await cache.put(requestUrl, response);
-      
+
       setLogs(prev => [...prev, {
         type: 'info',
         message: t('createdFile', { path }),
@@ -602,23 +599,21 @@ export default function App() {
             <div className="flex items-center gap-1 bg-white/2 border border-white/5 rounded-xl p-0.5 shadow-inner">
               <button
                 onClick={() => setLocale('en')}
-                className={`px-2 py-0.5 rounded-lg text-[11px] font-bold uppercase transition-all duration-200 cursor-pointer ${
-                  locale === 'en' 
-                    ? 'bg-indigo-600 text-white shadow-sm font-extrabold' 
+                className={`px-2 py-0.5 rounded-lg text-[11px] font-bold uppercase transition-all duration-200 cursor-pointer ${locale === 'en'
+                    ? 'bg-indigo-600 text-white shadow-sm font-extrabold'
                     : 'text-slate-400 hover:text-white'
-                }`}
-                title="Switch to English"
+                  }`}
+                title={t('switchToEnglish')}
               >
                 EN
               </button>
               <button
                 onClick={() => setLocale('zh')}
-                className={`px-2 py-0.5 rounded-lg text-[11px] font-bold uppercase transition-all duration-200 cursor-pointer ${
-                  locale === 'zh' 
-                    ? 'bg-indigo-600 text-white shadow-sm font-extrabold' 
+                className={`px-2 py-0.5 rounded-lg text-[11px] font-bold uppercase transition-all duration-200 cursor-pointer ${locale === 'zh'
+                    ? 'bg-indigo-600 text-white shadow-sm font-extrabold'
                     : 'text-slate-400 hover:text-white'
-                }`}
-                title="切换到中文"
+                  }`}
+                title={t('switchToChinese')}
               >
                 中文
               </button>
@@ -641,7 +636,7 @@ export default function App() {
         </header>
 
         {/* Center Canvas */}
-        <motion.main 
+        <motion.main
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -649,7 +644,7 @@ export default function App() {
         >
           <div className="text-center space-y-6 max-w-2xl">
             {/* Visual Icon */}
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.5 }}
@@ -671,26 +666,25 @@ export default function App() {
             </div>
 
             {/* Drag and Drop Zone Container */}
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.005 }}
               whileTap={{ scale: 0.995 }}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              className={`w-full max-w-lg mx-auto rounded-2xl border-2 border-dashed p-8 sm:p-10 text-center transition-all cursor-pointer relative overflow-hidden group ${
-                isDragging 
-                  ? 'border-indigo-500/60 bg-indigo-500/10 shadow-[0_0_32px_0_rgba(99,102,241,0.15)]' 
+              className={`w-full max-w-lg mx-auto rounded-2xl border-2 border-dashed p-8 sm:p-10 text-center transition-all cursor-pointer relative overflow-hidden group ${isDragging
+                  ? 'border-indigo-500/60 bg-indigo-500/10 shadow-[0_0_32px_0_rgba(99,102,241,0.15)]'
                   : 'border-white/10 bg-white/1 hover:border-white/20 hover:bg-white/2 hover:shadow-[0_12px_40px_0_rgba(99,102,241,0.03)]'
-              }`}
+                }`}
             >
-              <input 
-                type="file" 
-                accept=".zip" 
+              <input
+                type="file"
+                accept=".zip"
                 onChange={handleFileInput}
-                className="absolute inset-0 opacity-0 cursor-pointer z-10" 
+                className="absolute inset-0 opacity-0 cursor-pointer z-10"
                 id="zip-uploader-input"
               />
-              
+
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-slate-950/40 flex items-center justify-center border border-white/5 mx-auto group-hover:border-indigo-500/20 group-hover:text-indigo-400 transition-colors shadow-inner">
                   <Upload className="w-5 h-5 text-slate-400 group-hover:text-indigo-400 transition-all group-hover:-translate-y-0.5 duration-300" />
@@ -712,12 +706,12 @@ export default function App() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               {/* Directory selection button */}
               <div className="relative group/btn cursor-pointer px-5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-slate-300 text-xs font-semibold border border-white/5 transition-all shadow-md flex items-center gap-2">
-                <input 
-                  type="file" 
+                <input
+                  type="file"
                   // @ts-ignore
-                  webkitdirectory="" 
-                  directory="" 
-                  multiple 
+                  webkitdirectory=""
+                  directory=""
+                  multiple
                   onChange={handleFolderInput}
                   className="absolute inset-0 opacity-0 cursor-pointer z-10"
                   id="folder-uploader-input"
@@ -727,7 +721,7 @@ export default function App() {
               </div>
 
               {/* Sample Template Trigger */}
-              <button 
+              <button
                 onClick={loadDemoTemplate}
                 className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 hover:scale-[1.01] text-xs font-semibold text-white transition-all shadow-lg shadow-indigo-600/10 cursor-pointer flex items-center gap-2"
                 id="demo-template-btn"
@@ -757,10 +751,10 @@ export default function App() {
 
       {/* Unified Single Header */}
       <header className="h-14 px-3 sm:px-6 bg-slate-950 border-b border-white/5 flex items-center justify-between shrink-0 select-none z-10">
-        
+
         {/* Left: Back + File path indicator */}
         <div className="flex items-center gap-2 min-w-0">
-          <button 
+          <button
             onClick={handleReset}
             className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white transition-all py-1.5 px-2.5 sm:px-3.5 rounded-xl bg-white/2 border border-white/5 hover:bg-white/6 cursor-pointer font-semibold shadow-inner shrink-0"
             title={t('backToUploader')}
@@ -796,11 +790,10 @@ export default function App() {
           <div className="flex items-center bg-slate-900 border border-white/5 rounded-xl p-0.5 shadow-inner shrink-0">
             <button
               onClick={() => setViewMode('preview')}
-              className={`px-2 py-1 sm:px-3 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${
-                viewMode === 'preview'
+              className={`px-2 py-1 sm:px-3 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${viewMode === 'preview'
                   ? 'bg-indigo-600 text-white shadow-sm font-extrabold'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
               title={t('previewTab')}
             >
               <Eye className="w-3.5 h-3.5" />
@@ -814,11 +807,10 @@ export default function App() {
                   setSelectedFilePath(defaultF.path);
                 }
               }}
-              className={`px-2 py-1 sm:px-3 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${
-                viewMode === 'code'
+              className={`px-2 py-1 sm:px-3 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${viewMode === 'code'
                   ? 'bg-indigo-600 text-white shadow-sm font-extrabold'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
               title={t('codeTab')}
             >
               <Code className="w-3.5 h-3.5" />
@@ -865,11 +857,10 @@ export default function App() {
           {/* File Tree toggle */}
           <button
             onClick={() => setShowFileTree(!showFileTree)}
-            className={`px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border cursor-pointer ${
-              showFileTree 
-                ? 'bg-indigo-600/10 border-indigo-500/20 text-indigo-300 font-bold' 
+            className={`px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border cursor-pointer ${showFileTree
+                ? 'bg-indigo-600/10 border-indigo-500/20 text-indigo-300 font-bold'
                 : 'bg-white/2 border-white/5 text-slate-400 hover:text-slate-200'
-            }`}
+              }`}
             title={t('toggleExplorer')}
             id="toggle-explorer-btn"
           >
@@ -880,11 +871,10 @@ export default function App() {
           {/* Console toggle */}
           <button
             onClick={() => setShowConsole(!showConsole)}
-            className={`px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border cursor-pointer relative ${
-              showConsole 
-                ? 'bg-indigo-600/10 border-indigo-500/20 text-indigo-300 font-bold' 
+            className={`px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border cursor-pointer relative ${showConsole
+                ? 'bg-indigo-600/10 border-indigo-500/20 text-indigo-300 font-bold'
                 : 'bg-white/2 border-white/5 text-slate-400 hover:text-slate-200'
-            }`}
+              }`}
             title={t('toggleConsole')}
             id="toggle-console-btn"
           >
@@ -924,13 +914,13 @@ export default function App() {
 
       {/* Main Workspace Frame split view */}
       <div className="flex-1 flex overflow-hidden relative">
-        
+
         {/* Left Collapsible File Explorer Sidebar */}
         <AnimatePresence>
           {showFileTree && (
             <>
               {/* Mobile overlay backdrop for sidebar */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -938,14 +928,14 @@ export default function App() {
                 className="fixed inset-0 bg-black/60 backdrop-blur-xs z-20 md:hidden"
                 id="sidebar-backdrop"
               />
-              <motion.aside 
+              <motion.aside
                 initial={{ x: -320, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -320, opacity: 0 }}
                 transition={{ type: 'spring', damping: 28, stiffness: 240 }}
                 className="fixed inset-y-0 left-0 w-72 md:relative md:w-80 border-r border-white/5 h-full flex flex-col bg-slate-950 shrink-0 z-30 md:z-10"
               >
-                <FileTree 
+                <FileTree
                   files={files}
                   selectedPath={selectedFilePath || ''}
                   onSelectFile={handleSelectFile}
@@ -963,11 +953,11 @@ export default function App() {
 
         {/* Center / Right main view section */}
         <div className="flex-1 flex flex-col min-w-0 h-full relative">
-          
+
           {/* Dynamic View Area */}
           <div className="flex-1 overflow-hidden min-h-0 relative bg-slate-950/10">
             {viewMode === 'preview' ? (
-              <PreviewFrame 
+              <PreviewFrame
                 key={reloadKey}
                 sandboxId={sandboxId}
                 addressPath={addressPath}
@@ -980,7 +970,7 @@ export default function App() {
             ) : (
               <div className="h-full w-full overflow-hidden flex flex-col">
                 {activeEditFile ? (
-                  <CodeEditor 
+                  <CodeEditor
                     file={activeEditFile}
                     onSave={handleSaveFile}
                     hideHeader={true}
@@ -998,7 +988,7 @@ export default function App() {
           {/* Bottom Collapsible Console Drawer */}
           <AnimatePresence>
             {showConsole && (
-              <motion.div 
+              <motion.div
                 initial={{ y: '100%', opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '100%', opacity: 0 }}
@@ -1014,7 +1004,7 @@ export default function App() {
                       {t('liveLogs')}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     {logs.length > 0 && (
                       <button
@@ -1026,7 +1016,7 @@ export default function App() {
                         {t('clearLogs')}
                       </button>
                     )}
-                    <button 
+                    <button
                       onClick={() => setShowConsole(false)}
                       className="text-slate-500 hover:text-slate-300 cursor-pointer"
                       id="close-console-btn"
@@ -1057,7 +1047,7 @@ export default function App() {
                         colorClass = 'text-rose-400 bg-rose-500/5';
                         prefix = '❌';
                       }
-                      
+
                       return (
                         <div key={index} className={`flex items-start gap-2.5 px-3 py-1.5 rounded-lg leading-relaxed break-all ${colorClass}`}>
                           <span className="text-slate-600 text-[11px] font-semibold tracking-wider uppercase mt-0.5 select-none shrink-0">
