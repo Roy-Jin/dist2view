@@ -287,7 +287,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        const defaultContent = `/* New file: ${path} */\n`;
+        const defaultContent = ``;
         const content = new TextEncoder().encode(defaultContent);
         const newFile: VirtualFile = {
           path,
