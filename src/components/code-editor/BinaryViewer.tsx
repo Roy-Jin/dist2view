@@ -11,7 +11,7 @@ export default function BinaryViewer({ file, imageUrl }: BinaryViewerProps) {
   const { t } = useI18n();
 
   return (
-    <div className="flex-1 h-full flex flex-col items-center justify-center p-8 bg-slate-900/20">
+    <div className="flex-1 h-full min-w-0 flex flex-col items-center justify-center p-8 bg-slate-900/20">
       {imageUrl ? (
         <div className="flex flex-col items-center justify-center gap-4">
           <div className="relative group max-w-full max-h-87.5 overflow-hidden rounded-lg border border-slate-800 bg-slate-950 p-2 shadow-inner">

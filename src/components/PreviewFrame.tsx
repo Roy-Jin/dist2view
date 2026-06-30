@@ -18,7 +18,7 @@ interface PreviewFrameProps {
   onAddLog: (log: ConsoleLog) => void;
   htmlFiles?: string[];
   onTitleChange?: (title: string) => void;
-  hideHeader?: boolean;
+  onRefresh?: () => void;
 }
 
 export default function PreviewFrame({
@@ -28,7 +28,7 @@ export default function PreviewFrame({
   onAddLog,
   htmlFiles = [],
   onTitleChange,
-  hideHeader = false
+  onRefresh,
 }: PreviewFrameProps) {
   const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +55,7 @@ export default function PreviewFrame({
     if (iframeRef.current) {
       iframeRef.current.src = fullPreviewUrl;
     }
+    onRefresh?.();
     setTimeout(() => setIsLoading(false), 600);
   };
 
@@ -200,7 +201,8 @@ export default function PreviewFrame({
   };
 
   const handleOpenNewTab = () => {
-    window.open(fullPreviewUrl, '_blank');
+    const features = 'noopener,noreferrer,width=1280,height=800,popup=yes';
+    const popup = window.open(fullPreviewUrl, 'Dist2ViewPreview', features);
   };
 
   const handleAddressSubmit = (e: React.FormEvent) => {
@@ -209,65 +211,58 @@ export default function PreviewFrame({
   };
 
   return (
-    <div className={`flex flex-col h-full bg-slate-950/20 ${hideHeader ? '' : 'border border-white/5 rounded-2xl'} overflow-hidden shadow-2xl relative`}>
+    <div className="flex flex-col h-full min-w-0 bg-slate-950/20 border-x border-b border-white/5 overflow-hidden shadow-2xl relative">
 
-      {/* Minimalist Address bar & Controller */}
-      {!hideHeader && (
-        <div className="px-4 py-2.5 bg-slate-950/40 border-b border-white/5 flex flex-wrap items-center justify-between gap-3 shrink-0">
-
-          {/* Dynamic Document Title with pulsing status */}
-          <div className="flex items-center gap-1.5 bg-white/2 border border-white/5 px-2.5 py-1.5 rounded-xl text-slate-300 text-xs font-semibold shrink-0 select-none">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-            <span className="max-w-45 truncate font-mono tracking-tight" title={docTitle || addressPath}>
-              {docTitle || addressPath}
-            </span>
-          </div>
-
-          {/* Address URL Input bar */}
-          <form onSubmit={handleAddressSubmit} className="flex-1 min-w-50 max-w-xl flex items-center">
-            <div className="relative w-full flex items-center">
-              <Globe className="w-3.5 h-3.5 text-slate-600 absolute left-3" />
-              <span className="text-[10px] font-mono font-medium text-slate-500 absolute left-8 select-none">
-                preview/
-              </span>
-              <input
-                type="text"
-                value={addressPath}
-                onChange={(e) => setAddressPath(e.target.value)}
-                placeholder="index.html"
-                className="w-full bg-slate-950/30 border border-white/5 focus:border-indigo-500/30 rounded-xl pl-21 pr-20 py-1.5 text-xs text-slate-300 placeholder-slate-600 focus:outline-none font-mono"
-              />
-
-              {/* Quick Action Buttons */}
-              <div className="absolute right-2 flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={handleReload}
-                  className="p-1 hover:bg-white/8 text-slate-400 hover:text-indigo-400 rounded-lg transition-colors cursor-pointer"
-                  title={t('refreshPreview')}
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : (
-                    <RefreshCw className="w-3.5 h-3.5" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleOpenNewTab}
-                  className="p-1 hover:bg-white/8 text-slate-400 hover:text-indigo-400 rounded-lg transition-colors cursor-pointer"
-                  title={t('openNewWindow')}
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          </form>
-
-          {/* Balance space */}
-          <div className="w-4 h-4 hidden md:block" />
+      {/* Preview Toolbar */}
+      <div className="px-3 sm:px-6 py-2 bg-slate-950/40 border-b border-white/5 flex items-center gap-2 sm:gap-3 shrink-0 select-none">
+        {/* Live status indicator */}
+        <div className="hidden sm:flex items-center gap-1.5 shrink-0">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span
+            className="truncate font-mono text-[11px] text-slate-400 max-w-24 md:max-w-40"
+            title={docTitle || addressPath}
+          >
+            {docTitle || addressPath}
+          </span>
         </div>
-      )}
+
+        {/* Address bar */}
+        <form onSubmit={handleAddressSubmit} className="flex-1 min-w-0 flex items-center relative">
+          <Globe className="w-3.5 h-3.5 text-slate-600 absolute left-2.5 shrink-0" />
+          <span className="text-[10px] font-mono font-medium text-slate-500 absolute left-8 select-none hidden sm:inline">
+            preview/
+          </span>
+          <input
+            type="text"
+            value={addressPath}
+            onChange={(e) => setAddressPath(e.target.value)}
+            placeholder="index.html"
+            className="w-full bg-slate-950/30 border border-white/5 focus:border-indigo-500/30 rounded-lg pl-8 sm:pl-21 pr-20 py-1.5 text-[11px] text-slate-300 placeholder-slate-600 focus:outline-none font-mono"
+          />
+          <div className="absolute right-1.5 flex items-center gap-0.5">
+            <button
+              type="button"
+              onClick={handleReload}
+              className="p-1.5 hover:bg-white/8 text-slate-400 hover:text-indigo-400 rounded-lg transition-colors cursor-pointer"
+              title={t('refreshPreview')}
+            >
+              {isLoading ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <RefreshCw className="w-3.5 h-3.5" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={handleOpenNewTab}
+              className="p-1.5 hover:bg-white/8 text-slate-400 hover:text-indigo-400 rounded-lg transition-colors cursor-pointer"
+              title={t('openNewWindow')}
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </form>
+      </div>
 
       {/* Frame Visual Area */}
       <div className="flex-1 bg-slate-950/10 flex items-center justify-center p-0 overflow-hidden relative">

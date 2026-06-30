@@ -36,6 +36,7 @@ interface WorkspaceActions {
   createFolder: (folderPath: string) => Promise<void>;
   createFile: (path: string) => Promise<void>;
   selectFile: (path: string) => void;
+  closeTab: (path: string) => void;
   setAddressPath: (path: string) => void;
   setViewMode: (mode: 'preview' | 'code') => void;
   setIframeTitle: (title: string) => void;
@@ -133,8 +134,8 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
           addWarnLog(t('deletedFile', { path }));
         }
 
-        if (state.selectedFilePath === path) {
-          dispatch({ type: 'SELECT_FILE', payload: null });
+        if (state.openTabs.includes(path)) {
+          dispatch({ type: 'CLOSE_TAB', payload: path });
         }
       },
 
@@ -160,8 +161,8 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
           addInfoLog(t('renamedFile', { oldPath, newPath }));
         }
 
-        if (state.selectedFilePath === oldPath) {
-          dispatch({ type: 'SELECT_FILE', payload: newPath });
+        if (state.openTabs.includes(oldPath) || state.selectedFilePath === oldPath) {
+          dispatch({ type: 'RENAME_TAB', payload: { oldPath, newPath } });
         }
         if (state.addressPath === oldPath) {
           dispatch({ type: 'SET_ADDRESS_PATH', payload: newPath });
@@ -203,6 +204,11 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
           addInfoLog(t('renamedFolder', { oldFolderPath, newFolderPath }));
         }
 
+        const nextTabs = state.openTabs.map((path) =>
+          path.startsWith(oldPrefix) ? path.replace(oldPrefix, newPrefix) : path
+        );
+        dispatch({ type: 'SET_OPEN_TABS', payload: nextTabs });
+
         if (state.selectedFilePath?.startsWith(oldPrefix)) {
           dispatch({
             type: 'SELECT_FILE',
@@ -237,8 +243,13 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
           addWarnLog(t('deletedFolder', { folderPath }));
         }
 
+        const nextTabs = state.openTabs.filter(
+          (path) => !path.startsWith(prefix)
+        );
+        dispatch({ type: 'SET_OPEN_TABS', payload: nextTabs });
+
         if (state.selectedFilePath?.startsWith(prefix)) {
-          dispatch({ type: 'SELECT_FILE', payload: null });
+          dispatch({ type: 'SELECT_FILE', payload: nextTabs[nextTabs.length - 1] ?? null });
         }
       },
 
@@ -303,6 +314,10 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
         } else {
           dispatch({ type: 'SET_VIEW_MODE', payload: 'code' });
         }
+      },
+
+      closeTab: (path: string) => {
+        dispatch({ type: 'CLOSE_TAB', payload: path });
       },
 
       setAddressPath: (path: string) => {

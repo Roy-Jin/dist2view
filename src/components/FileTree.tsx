@@ -11,7 +11,8 @@ import {
   FileCheck,
   X,
   Check,
-  FolderPlus
+  FolderPlus,
+  Download,
 } from 'lucide-react';
 import { FileNode, VirtualFile } from '../core/types';
 import { buildFileTree } from '../core/file/tree';
@@ -30,6 +31,7 @@ interface FileTreeProps {
   onRenameFolder?: (oldPath: string, newPath: string) => void;
   onDeleteFolder?: (path: string) => void;
   onCreateFolder?: (path: string) => void;
+  onDownloadZip?: () => void;
 }
 
 interface ContextMenuState {
@@ -49,7 +51,8 @@ export default function FileTree({
   onRenameFile,
   onRenameFolder,
   onDeleteFolder,
-  onCreateFolder
+  onCreateFolder,
+  onDownloadZip,
 }: FileTreeProps) {
   const { t } = useI18n();
   const [searchTerm, setSearchTerm] = useState('');
@@ -457,6 +460,20 @@ export default function FileTree({
         <span>{t('filesCount', { count: files.length })}</span>
         <span>{t('sizeLabel')}: <b className="text-indigo-400">{formatBytes(files.reduce((acc, f) => acc + f.size, 0))}</b></span>
       </div>
+
+      {/* Export ZIP action */}
+      {onDownloadZip && (
+        <div className="p-3 border-t border-white/5 bg-slate-950/40">
+          <button
+            onClick={onDownloadZip}
+            className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl transition-all shadow-md shadow-indigo-600/15 cursor-pointer flex items-center justify-center gap-2 text-xs font-bold"
+            title={t('exportZipTooltip')}
+          >
+            <Download className="w-3.5 h-3.5" />
+            {t('exportZip')}
+          </button>
+        </div>
+      )}
 
       {/* Sleek Custom Right-Click Context Menu */}
       <FileTreeContextMenu

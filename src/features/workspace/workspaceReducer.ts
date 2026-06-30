@@ -8,6 +8,7 @@ export interface WorkspaceState {
   isSwRegistered: boolean;
   registerError: string | null;
   selectedFilePath: string | null;
+  openTabs: string[];
   viewMode: 'preview' | 'code';
   iframeTitle: string;
   isDragging: boolean;
@@ -24,6 +25,7 @@ export const initialWorkspaceState: WorkspaceState = {
   isSwRegistered: false,
   registerError: null,
   selectedFilePath: null,
+  openTabs: [],
   viewMode: 'preview',
   iframeTitle: '',
   isDragging: false,
@@ -42,6 +44,9 @@ export type WorkspaceAction =
   | { type: 'SET_SW_REGISTERED'; payload: boolean }
   | { type: 'SET_REGISTER_ERROR'; payload: string | null }
   | { type: 'SELECT_FILE'; payload: string | null }
+  | { type: 'CLOSE_TAB'; payload: string }
+  | { type: 'RENAME_TAB'; payload: { oldPath: string; newPath: string } }
+  | { type: 'SET_OPEN_TABS'; payload: string[] }
   | { type: 'SET_VIEW_MODE'; payload: 'preview' | 'code' }
   | { type: 'SET_IFRAME_TITLE'; payload: string }
   | { type: 'SET_DRAGGING'; payload: boolean }
@@ -71,8 +76,33 @@ export function workspaceReducer(
       return { ...state, isSwRegistered: action.payload };
     case 'SET_REGISTER_ERROR':
       return { ...state, registerError: action.payload };
-    case 'SELECT_FILE':
-      return { ...state, selectedFilePath: action.payload };
+    case 'SELECT_FILE': {
+      const nextPath = action.payload;
+      const nextTabs =
+        nextPath && !state.openTabs.includes(nextPath)
+          ? [...state.openTabs, nextPath]
+          : state.openTabs;
+      return { ...state, selectedFilePath: nextPath, openTabs: nextTabs };
+    }
+    case 'CLOSE_TAB': {
+      const nextTabs = state.openTabs.filter((path) => path !== action.payload);
+      const nextSelected =
+        state.selectedFilePath === action.payload
+          ? nextTabs[nextTabs.length - 1] ?? null
+          : state.selectedFilePath;
+      return { ...state, openTabs: nextTabs, selectedFilePath: nextSelected };
+    }
+    case 'RENAME_TAB': {
+      const { oldPath, newPath } = action.payload;
+      const nextTabs = state.openTabs.map((path) =>
+        path === oldPath ? newPath : path
+      );
+      const nextSelected =
+        state.selectedFilePath === oldPath ? newPath : state.selectedFilePath;
+      return { ...state, openTabs: nextTabs, selectedFilePath: nextSelected };
+    }
+    case 'SET_OPEN_TABS':
+      return { ...state, openTabs: action.payload };
     case 'SET_VIEW_MODE':
       return { ...state, viewMode: action.payload };
     case 'SET_IFRAME_TITLE':
@@ -86,7 +116,11 @@ export function workspaceReducer(
     case 'SET_HAS_UPLOADED':
       return { ...state, hasUploaded: action.payload };
     case 'RESET_WORKSPACE':
-      return initialWorkspaceState;
+      return {
+        ...initialWorkspaceState,
+        isSwRegistered: state.isSwRegistered,
+        registerError: state.registerError,
+      };
     default:
       return state;
   }

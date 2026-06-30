@@ -5,6 +5,7 @@ import { VirtualFile } from '../core/types';
 import { getMimeType } from '../core/file/parser';
 import EmptyState from './code-editor/EmptyState';
 import EditorHeader from './code-editor/EditorHeader';
+import EditorTabs from './code-editor/EditorTabs';
 import BinaryViewer from './code-editor/BinaryViewer';
 import EditorStatusBar from './code-editor/EditorStatusBar';
 
@@ -14,11 +15,25 @@ let themeDefined = false;
 
 interface CodeEditorProps {
   file: VirtualFile | null;
+  files: VirtualFile[];
+  tabs: string[];
+  activeTab: string | null;
   onSave: (path: string, content: string) => void;
+  onSelectTab: (path: string) => void;
+  onCloseTab: (path: string) => void;
   hideHeader?: boolean;
 }
 
-export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEditorProps) {
+export default function CodeEditor({
+  file,
+  files,
+  tabs,
+  activeTab,
+  onSave,
+  onSelectTab,
+  onCloseTab,
+  hideHeader = false,
+}: CodeEditorProps) {
   const [code, setCode] = useState('');
   const [isModified, setIsModified] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -180,7 +195,16 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
   const lines = code.split('\n');
 
   return (
-    <div className="flex flex-col h-full bg-slate-950/20 overflow-hidden relative">
+    <div className="flex flex-col h-full min-w-0 bg-slate-950/20 overflow-visible relative">
+      {tabs.length > 0 && (
+        <EditorTabs
+          tabs={tabs}
+          activeTab={activeTab || ''}
+          files={files}
+          onSelect={onSelectTab}
+          onClose={onCloseTab}
+        />
+      )}
       <EditorHeader
         file={file}
         isModified={isModified}
@@ -189,12 +213,12 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
       />
 
       {/* Editor Content Panel */}
-      <div className="flex-1 overflow-auto relative bg-slate-950/40 custom-scrollbar flex min-h-0">
+      <div className="flex-1 overflow-visible relative bg-slate-950/40 flex min-h-0 min-w-0">
         {file.isBinary ? (
           <BinaryViewer file={file} imageUrl={imageUrl} />
         ) : (
           /* Monaco Editor */
-          <div className="flex-1 h-full min-h-0 relative">
+          <div className="flex-1 h-full min-h-0 min-w-0 relative w-full overflow-visible">
             <Editor
               path={file.path}
               language={getLanguage(file.path)}
@@ -241,6 +265,7 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
                 contextmenu: true,
                 mouseWheelZoom: true,
                 fixedOverflowWidgets: true,
+                overflowWidgetsDomNode: document.body,
               }}
             />
           </div>

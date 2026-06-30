@@ -17,6 +17,7 @@ export default function Workspace() {
     sandboxId,
     addressPath,
     selectedFilePath,
+    openTabs,
     viewMode,
     showFileTree,
     showConsole,
@@ -67,7 +68,7 @@ export default function Workspace() {
       <div className="absolute top-[-20%] left-[-10%] w-220 h-220 bg-indigo-500/5 rounded-full filter blur-[140px] pointer-events-none -z-10" />
       <div className="absolute bottom-[-15%] right-[-5%] w-180 h-180 bg-indigo-500/5 rounded-full filter blur-[140px] pointer-events-none -z-10" />
 
-      <Header onRefresh={() => setReloadKey((key) => key + 1)} />
+      <Header />
 
       {/* Main Workspace Frame split view */}
       <div className="flex-1 flex overflow-hidden relative">
@@ -105,6 +106,7 @@ export default function Workspace() {
                   }
                   onDeleteFolder={(path) => actions.deleteFolder(path)}
                   onCreateFolder={(path) => actions.createFolder(path)}
+                  onDownloadZip={() => actions.downloadZip()}
                 />
               </motion.aside>
             </>
@@ -114,7 +116,7 @@ export default function Workspace() {
         {/* Center / Right main view section */}
         <div className="flex-1 flex flex-col min-w-0 h-full relative">
           {/* Dynamic View Area */}
-          <div className="flex-1 overflow-hidden min-h-0 relative bg-slate-950/10">
+          <div className="flex-1 overflow-visible min-h-0 relative bg-slate-950/10">
             {viewMode === 'preview' ? (
               <PreviewFrame
                 key={reloadKey}
@@ -124,14 +126,19 @@ export default function Workspace() {
                 onAddLog={handleAddLog}
                 htmlFiles={htmlFiles}
                 onTitleChange={(title) => actions.setIframeTitle(title)}
-                hideHeader={true}
+                onRefresh={() => setReloadKey((key) => key + 1)}
               />
             ) : (
-              <div className="h-full w-full overflow-hidden flex flex-col">
+              <div className="h-full w-full min-w-0 overflow-visible flex flex-col">
                 {activeEditFile ? (
                   <CodeEditor
                     file={activeEditFile}
+                    files={files}
+                    tabs={openTabs}
+                    activeTab={selectedFilePath}
                     onSave={(path, content) => actions.saveFile(path, content)}
+                    onSelectTab={(path) => actions.selectFile(path)}
+                    onCloseTab={(path) => actions.closeTab(path)}
                     hideHeader={true}
                   />
                 ) : (

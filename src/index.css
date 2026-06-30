@@ -36,6 +36,15 @@
   background: rgba(99, 102, 241, 0.3);
 }
 
+/* Hide scrollbars while keeping content scrollable */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Glass input used across the file tree */
 .glass-input {
   background: rgba(3, 7, 18, 0.6);
