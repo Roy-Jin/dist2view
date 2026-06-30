@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "run-s demo:zip dev:vite",
     "build": "run-s demo:zip build:vite",
-    "demo:zip": "node scripts/build-demo.ts",
+    "demo:zip": "node scripts/build-demo.js",
     "dev:vite": "vite",
     "build:vite": "vite build",
     "preview": "vite preview",
