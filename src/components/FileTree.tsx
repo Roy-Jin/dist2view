@@ -201,9 +201,9 @@ export default function FileTree({
                   )}
                 </span>
                 {isExpanded || hasSearchActive ? (
-                  <FolderOpen className="w-4 h-4 text-indigo-400 shrink-0" />
+                  <FolderOpen className="w-4 h-4 text-[#45969c] shrink-0" />
                 ) : (
-                  <Folder className="w-4 h-4 text-indigo-400 shrink-0" />
+                  <Folder className="w-4 h-4 text-[#45969c] shrink-0" />
                 )}
                 {isFolderRenaming ? (
                   <input
@@ -232,7 +232,7 @@ export default function FileTree({
                     setIsCreatingInFolder(node.path);
                     setCreatingType('file');
                   }}
-                  className="p-1 hover:bg-white/8 text-slate-400 hover:text-indigo-300 rounded-lg transition-colors cursor-pointer"
+                  className="p-1 hover:bg-white/8 text-slate-400 hover:text-[#45969c] rounded-lg transition-colors cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                 </button>
@@ -260,7 +260,7 @@ export default function FileTree({
               onClick={(e) => e.stopPropagation()}
             >
               {creatingType === 'folder' ? (
-                <Folder className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <Folder className="w-3.5 h-3.5 text-[#45969c] shrink-0" />
               ) : (
                 <File className="w-3.5 h-3.5 text-slate-500 shrink-0" />
               )}
@@ -303,7 +303,7 @@ export default function FileTree({
           key={node.path}
           style={{ paddingLeft: `${level * 12 + 24}px` }}
           className={`group flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs cursor-pointer transition-all select-none ${isSelected
-              ? 'bg-indigo-600/15 border border-indigo-500/20 text-indigo-200 font-semibold shadow-sm'
+              ? 'bg-[#45969c]/15 border border-[#45969c]/20 text-[#67b3b8] font-semibold shadow-sm'
               : 'text-slate-400 hover:bg-white/4 hover:text-slate-200 border border-transparent'
             }`}
           onClick={() => onSelectFile(node.path)}
@@ -391,7 +391,7 @@ export default function FileTree({
             setIsCreatingInFolder('');
             setCreatingType('file');
           }}
-          className="p-2 bg-white/2 border border-white/5 hover:bg-white/4 text-indigo-400 rounded-xl transition-all cursor-pointer flex items-center justify-center"
+          className="p-2 bg-white/2 border border-white/5 hover:bg-white/4 text-[#45969c] rounded-xl transition-all cursor-pointer flex items-center justify-center"
           title={t('createFile')}
         >
           <Plus className="w-3.5 h-3.5" />
@@ -402,7 +402,7 @@ export default function FileTree({
             setIsCreatingInFolder('');
             setCreatingType('folder');
           }}
-          className="p-2 bg-white/2 border border-white/5 hover:bg-white/4 text-indigo-400 rounded-xl transition-all cursor-pointer flex items-center justify-center"
+          className="p-2 bg-white/2 border border-white/5 hover:bg-white/4 text-[#45969c] rounded-xl transition-all cursor-pointer flex items-center justify-center"
           title={t('createFolderTooltip')}
         >
           <FolderPlus className="w-3.5 h-3.5" />
@@ -414,7 +414,7 @@ export default function FileTree({
         <div className="p-3 bg-white/1 border-b border-white/5 animate-fade-in">
           <form onSubmit={(e) => handleCreateSubmit(e, '')} className="flex items-center gap-2">
             {creatingType === 'folder' ? (
-              <Folder className="w-4 h-4 text-indigo-400 shrink-0" />
+              <Folder className="w-4 h-4 text-[#45969c] shrink-0" />
             ) : (
               <File className="w-4 h-4 text-slate-400 shrink-0" />
             )}
@@ -458,7 +458,7 @@ export default function FileTree({
       {/* Tree Footer stats */}
       <div className="p-3 border-t border-white/5 bg-slate-950/40 flex items-center justify-between text-[10px] font-mono text-slate-500 select-none">
         <span>{t('filesCount', { count: files.length })}</span>
-        <span>{t('sizeLabel')}: <b className="text-indigo-400">{formatBytes(files.reduce((acc, f) => acc + f.size, 0))}</b></span>
+        <span>{t('sizeLabel')}: <b className="text-[#45969c]">{formatBytes(files.reduce((acc, f) => acc + f.size, 0))}</b></span>
       </div>
 
       {/* Export ZIP action */}
@@ -466,7 +466,7 @@ export default function FileTree({
         <div className="p-3 border-t border-white/5 bg-slate-950/40">
           <button
             onClick={onDownloadZip}
-            className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl transition-all shadow-md shadow-indigo-600/15 cursor-pointer flex items-center justify-center gap-2 text-xs font-bold"
+            className="w-full py-2.5 bg-[#45969c] hover:bg-[#67b3b8] text-white rounded-xl transition-all shadow-md shadow-[#45969c]/15 cursor-pointer flex items-center justify-center gap-2 text-xs font-bold"
             title={t('exportZipTooltip')}
           >
             <Download className="w-3.5 h-3.5" />

@@ -87,74 +87,78 @@ export default function CodeEditor({
   const handleBeforeMount: BeforeMount = (monaco) => {
     // Define theme once (multiple editor instances share the same monaco runtime)
     if (!themeDefined) {
+      // Theme palette:
+      //   primary      #45969c  — teal (brand color)
+      //   primary-dim  #67b3b8  — lighter teal for active line numbers / highlights
+      //   primary-dark #2f7278  — darker teal
       monaco.editor.defineTheme(THEME_NAME, {
         base: 'vs-dark',
         inherit: true,
         rules: [
-          { token: '', foreground: 'cbd5e1' }, // slate-300 default foreground
+          { token: '', foreground: 'cbd5e1' },                    // slate-300 default
           { token: 'comment', foreground: '64748b', fontStyle: 'italic' }, // slate-500
-          { token: 'keyword', foreground: '818cf8' }, // indigo-400
-          { token: 'operator', foreground: '94a3b8' }, // slate-400
-          { token: 'number', foreground: 'fbbf24' }, // amber-400
-          { token: 'string', foreground: '34d399' }, // emerald-400
-          { token: 'string.escape', foreground: '22d3ee' }, // cyan-400
-          { token: 'type', foreground: 'a78bfa' }, // violet-400
-          { token: 'type.identifier', foreground: 'a78bfa' },
-          { token: 'class', foreground: 'a78bfa' },
-          { token: 'function', foreground: '22d3ee' }, // cyan-400
-          { token: 'variable', foreground: 'e2e8f0' }, // slate-200
+          { token: 'keyword', foreground: '45969c' },             // primary teal
+          { token: 'operator', foreground: '94a3b8' },            // slate-400
+          { token: 'number', foreground: 'fbbf24' },              // amber-400
+          { token: 'string', foreground: '34d399' },              // emerald-400
+          { token: 'string.escape', foreground: '67b3b8' },       // primary-dim
+          { token: 'type', foreground: '7ecdd1' },                // teal-300-ish
+          { token: 'type.identifier', foreground: '7ecdd1' },
+          { token: 'class', foreground: '7ecdd1' },
+          { token: 'function', foreground: '67b3b8' },            // primary-dim
+          { token: 'variable', foreground: 'e2e8f0' },            // slate-200
           { token: 'variable.predefined', foreground: 'f472b6' }, // pink-400
-          { token: 'constant', foreground: 'fbbf24' }, // amber-400
-          { token: 'delimiter', foreground: '64748b' }, // slate-500
-          { token: 'tag', foreground: '818cf8' }, // indigo-400（HTML tag）
-          { token: 'attribute.name', foreground: 'fbbf24' }, // amber-400
-          { token: 'attribute.value', foreground: '34d399' }, // emerald-400
+          { token: 'constant', foreground: 'fbbf24' },            // amber-400
+          { token: 'delimiter', foreground: '64748b' },           // slate-500
+          { token: 'tag', foreground: '45969c' },                 // primary teal (HTML tag)
+          { token: 'attribute.name', foreground: 'fbbf24' },      // amber-400
+          { token: 'attribute.value', foreground: '34d399' },     // emerald-400
           { token: 'metatag', foreground: '64748b' },
-          { token: 'invalid', foreground: 'f87171' }, // red-400
+          { token: 'invalid', foreground: 'f87171' },             // red-400
         ],
         colors: {
           // Editor background: transparent to let the page radial gradient show through
           'editor.background': '#03071200',
           'editor.foreground': '#cbd5e1',
           'editorGutter.background': '#03071200',
-          'editorLineNumber.foreground': '#475569', // slate-600
-          'editorLineNumber.activeForeground': '#818cf8', // indigo-400
-          'editor.lineHighlightBackground': '#6366f10d',
+          'editorLineNumber.foreground': '#475569',       // slate-600
+          'editorLineNumber.activeForeground': '#45969c', // primary
+          'editor.lineHighlightBackground': '#45969c0d',
           'editor.lineHighlightBorder': '#00000000',
-          'editor.selectionBackground': '#6366f140', // indigo-500/25
-          'editor.inactiveSelectionBackground': '#6366f126',
-          'editor.selectionHighlightBackground': '#6366f126',
-          'editorCursor.foreground': '#818cf8', // indigo-400
+          'editor.selectionBackground': '#45969c40',
+          'editor.inactiveSelectionBackground': '#45969c26',
+          'editor.selectionHighlightBackground': '#45969c26',
+          'editorCursor.foreground': '#45969c',
           'editorWhitespace.foreground': '#1e293b',
           'editorIndentGuide.background': '#1e293b',
           'editorIndentGuide.activeBackground': '#334155',
-          'editorBracketMatch.background': '#6366f126',
-          'editorBracketMatch.border': '#818cf880',
-          'editor.findMatchBackground': '#6366f140',
-          'editor.findMatchHighlightBackground': '#6366f126',
-          'editor.hoverHighlightBackground': '#6366f11a',
-          'editorLink.activeForeground': '#818cf8',
+          'editorBracketMatch.background': '#45969c26',
+          'editorBracketMatch.border': '#45969c80',
+          'editor.findMatchBackground': '#45969c40',
+          'editor.findMatchHighlightBackground': '#45969c26',
+          'editor.hoverHighlightBackground': '#45969c1a',
+          'editorLink.activeForeground': '#67b3b8',
           'editorWidget.background': '#0b1220',
           'editorWidget.border': '#1e293b',
           'editorSuggestWidget.background': '#0b1220',
           'editorSuggestWidget.border': '#1e293b',
-          'editorSuggestWidget.selectedBackground': '#6366f126',
-          'editorSuggestWidget.hoverBackground': '#6366f11a',
+          'editorSuggestWidget.selectedBackground': '#45969c26',
+          'editorSuggestWidget.hoverBackground': '#45969c1a',
           'editorSuggestWidget.foreground': '#cbd5e1',
-          'editorSuggestWidget.highlightForeground': '#818cf8',
+          'editorSuggestWidget.highlightForeground': '#45969c',
           'editorHoverWidget.background': '#0b1220',
           'editorHoverWidget.border': '#1e293b',
           'editorError.foreground': '#f87171',
           'editorWarning.foreground': '#fbbf24',
-          'editorInfo.foreground': '#22d3ee',
+          'editorInfo.foreground': '#67b3b8',
           'scrollbarSlider.background': '#ffffff14',
-          'scrollbarSlider.hoverBackground': '#6366f14d',
-          'scrollbarSlider.activeBackground': '#6366f180',
+          'scrollbarSlider.hoverBackground': '#45969c4d',
+          'scrollbarSlider.activeBackground': '#45969c80',
           'scrollbar.shadow': '#00000000',
           'minimap.background': '#03071200',
           'minimapSlider.background': '#ffffff0a',
-          'minimapSlider.hoverBackground': '#6366f126',
-          'peekView.border': '#6366f1',
+          'minimapSlider.hoverBackground': '#45969c26',
+          'peekView.border': '#45969c',
           'peekViewResult.background': '#0b1220',
           'peekViewEditor.background': '#0b1220',
         },
@@ -265,7 +269,6 @@ export default function CodeEditor({
                 contextmenu: true,
                 mouseWheelZoom: true,
                 fixedOverflowWidgets: true,
-                overflowWidgetsDomNode: document.body,
               }}
             />
           </div>

@@ -237,13 +237,13 @@ export default function PreviewFrame({
             value={addressPath}
             onChange={(e) => setAddressPath(e.target.value)}
             placeholder="index.html"
-            className="w-full bg-slate-950/30 border border-white/5 focus:border-indigo-500/30 rounded-lg pl-8 sm:pl-21 pr-20 py-1.5 text-[11px] text-slate-300 placeholder-slate-600 focus:outline-none font-mono"
+            className="w-full bg-slate-950/30 border border-white/5 focus:border-[#45969c]/30 rounded-lg pl-8 sm:pl-21 pr-20 py-1.5 text-[11px] text-slate-300 placeholder-slate-600 focus:outline-none font-mono"
           />
           <div className="absolute right-1.5 flex items-center gap-0.5">
             <button
               type="button"
               onClick={handleReload}
-              className="p-1.5 hover:bg-white/8 text-slate-400 hover:text-indigo-400 rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 hover:bg-white/8 text-slate-400 hover:text-[#45969c] rounded-lg transition-colors cursor-pointer"
               title={t('refreshPreview')}
             >
               {isLoading ? (
@@ -255,7 +255,7 @@ export default function PreviewFrame({
             <button
               type="button"
               onClick={handleOpenNewTab}
-              className="p-1.5 hover:bg-white/8 text-slate-400 hover:text-indigo-400 rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 hover:bg-white/8 text-slate-400 hover:text-[#45969c] rounded-lg transition-colors cursor-pointer"
               title={t('openNewWindow')}
             >
               <ExternalLink className="w-3.5 h-3.5" />
@@ -270,7 +270,7 @@ export default function PreviewFrame({
         {/* Loading overlay */}
         {isLoading && (
           <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center gap-3 z-30 backdrop-blur-md">
-            <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+            <Loader2 className="w-6 h-6 text-[#45969c] animate-spin" />
             <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">{t('reloadingFrame')}</span>
           </div>
         )}

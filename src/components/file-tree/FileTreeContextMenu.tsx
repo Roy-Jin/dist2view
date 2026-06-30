@@ -45,23 +45,23 @@ export default function FileTreeContextMenu({
           </div>
           <button
             onClick={() => onStartCreate(contextMenu.path, 'file')}
-            className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
+            className="w-full text-left px-3 py-2 hover:bg-[#45969c] hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
           >
-            <Plus className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
+            <Plus className="w-3.5 h-3.5 text-[#45969c] group-hover:text-white shrink-0" />
             <span>{t('createFile')}</span>
           </button>
           <button
             onClick={() => onStartCreate(contextMenu.path, 'folder')}
-            className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
+            className="w-full text-left px-3 py-2 hover:bg-[#45969c] hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
           >
-            <FolderPlus className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
+            <FolderPlus className="w-3.5 h-3.5 text-[#45969c] group-hover:text-white shrink-0" />
             <span>{t('newSubfolder')}</span>
           </button>
           <button
             onClick={() => onStartRename(contextMenu.path, true)}
-            className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
+            className="w-full text-left px-3 py-2 hover:bg-[#45969c] hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
           >
-            <Edit3 className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
+            <Edit3 className="w-3.5 h-3.5 text-[#45969c] group-hover:text-white shrink-0" />
             <span>{t('renameFolder')}</span>
           </button>
           <div className="h-px bg-white/5 my-1" />
@@ -84,16 +84,16 @@ export default function FileTreeContextMenu({
           </div>
           <button
             onClick={() => onSelectFile(contextMenu.path)}
-            className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
+            className="w-full text-left px-3 py-2 hover:bg-[#45969c] hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
           >
-            <FileText className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
+            <FileText className="w-3.5 h-3.5 text-[#45969c] group-hover:text-white shrink-0" />
             <span>{t('openAndView')}</span>
           </button>
           <button
             onClick={() => onStartRename(contextMenu.path, false)}
-            className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
+            className="w-full text-left px-3 py-2 hover:bg-[#45969c] hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
           >
-            <Edit3 className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
+            <Edit3 className="w-3.5 h-3.5 text-[#45969c] group-hover:text-white shrink-0" />
             <span>{t('renameFile')}</span>
           </button>
           <div className="h-px bg-white/5 my-1" />

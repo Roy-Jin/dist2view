@@ -65,8 +65,8 @@ export default function Workspace() {
   return (
     <div className="h-screen bg-slate-950 text-slate-200 flex flex-col font-sans overflow-hidden relative grid-pattern">
       {/* Ambient background glows */}
-      <div className="absolute top-[-20%] left-[-10%] w-220 h-220 bg-indigo-500/5 rounded-full filter blur-[140px] pointer-events-none -z-10" />
-      <div className="absolute bottom-[-15%] right-[-5%] w-180 h-180 bg-indigo-500/5 rounded-full filter blur-[140px] pointer-events-none -z-10" />
+      <div className="absolute top-[-20%] left-[-10%] w-220 h-220 bg-[#45969c]/5 rounded-full filter blur-[140px] pointer-events-none -z-10" />
+      <div className="absolute bottom-[-15%] right-[-5%] w-180 h-180 bg-[#45969c]/5 rounded-full filter blur-[140px] pointer-events-none -z-10" />
 
       <Header />
 

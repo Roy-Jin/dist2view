@@ -42,7 +42,7 @@ export default function ConsolePanel() {
       </div>
 
       {/* Log stream view area */}
-      <div className="flex-1 overflow-y-auto p-4 font-mono text-xs space-y-2 custom-scrollbar select-text selection:bg-indigo-500/25">
+      <div className="flex-1 overflow-y-auto p-4 font-mono text-xs space-y-2 custom-scrollbar select-text selection:bg-[#45969c]/25">
         {logs.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-slate-600 text-center font-mono gap-1.5">
             <Terminal className="w-5 h-5 text-slate-700 stroke-1" />

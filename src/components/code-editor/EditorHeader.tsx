@@ -29,7 +29,7 @@ export default function EditorHeader({
         </span>
         <button
           onClick={onSave}
-          className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[11px] font-semibold flex items-center gap-1 transition-all shadow-lg hover:shadow-indigo-600/20 border border-indigo-500/30 cursor-pointer"
+          className="px-3 py-1 bg-[#45969c] hover:bg-[#67b3b8] text-white rounded-lg text-[11px] font-semibold flex items-center gap-1 transition-all shadow-lg hover:shadow-[#45969c]/20 border border-[#45969c]/30 cursor-pointer"
         >
           <Save className="w-3.5 h-3.5" />
           {t('saveAndSync')}
@@ -44,7 +44,7 @@ export default function EditorHeader({
         {file.isBinary ? (
           <ImageIcon className="w-4 h-4 text-emerald-400 shrink-0" />
         ) : (
-          <Code className="w-4 h-4 text-indigo-400 shrink-0" />
+          <Code className="w-4 h-4 text-[#45969c] shrink-0" />
         )}
         <div className="min-w-0">
           <span className="text-xs font-mono font-semibold text-slate-200 block truncate">
@@ -68,7 +68,7 @@ export default function EditorHeader({
             disabled={!isModified}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all shadow-md ${
               isModified
-                ? 'bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer'
+                ? 'bg-[#45969c] hover:bg-[#67b3b8] text-white cursor-pointer'
                 : 'bg-white/2 text-slate-500 cursor-not-allowed border border-white/5'
             }`}
           >

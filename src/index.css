@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* =====================================================
+   Global Theme Variables
+   Primary brand color: #45969c (teal)
+   ===================================================== */
+:root {
+  /* Primary brand color */
+  --color-primary:        69 150 156;   /* #45969c  — RGB triplet for use with opacity modifiers */
+  --color-primary-hex:    #45969c;
+  --color-primary-light:  #67b3b8;      /* +15% lightness */
+  --color-primary-dark:   #2f7278;      /* -15% lightness */
+
+  /* Derived transparent variants */
+  --color-primary-5:   rgba(69, 150, 156, 0.05);
+  --color-primary-8:   rgba(69, 150, 156, 0.08);
+  --color-primary-10:  rgba(69, 150, 156, 0.10);
+  --color-primary-15:  rgba(69, 150, 156, 0.15);
+  --color-primary-20:  rgba(69, 150, 156, 0.20);
+  --color-primary-25:  rgba(69, 150, 156, 0.25);
+  --color-primary-30:  rgba(69, 150, 156, 0.30);
+  --color-primary-50:  rgba(69, 150, 156, 0.50);
+}
+
 @layer base {
   *, *::before, *::after {
     box-sizing: border-box;
@@ -7,9 +29,9 @@
   body {
     background-color: #030712;
     background-image: 
-      radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-      radial-gradient(at 90% 10%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
-      radial-gradient(at 50% 80%, rgba(139, 92, 246, 0.06) 0px, transparent 50%);
+      radial-gradient(at 10% 20%, var(--color-primary-8) 0px, transparent 50%),
+      radial-gradient(at 90% 10%, var(--color-primary-8) 0px, transparent 50%),
+      radial-gradient(at 50% 80%, rgba(69, 150, 156, 0.06) 0px, transparent 50%);
     background-attachment: fixed;
     min-height: 100vh;
   }
@@ -33,7 +55,7 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.3);
+  background: var(--color-primary-30);
 }
 
 /* Hide scrollbars while keeping content scrollable */
@@ -53,9 +75,9 @@
 }
 
 .glass-input:focus {
-  border-color: rgba(99, 102, 241, 0.5);
+  border-color: var(--color-primary-50);
   background: rgba(3, 7, 18, 0.8);
-  box-shadow: 0 0 12px 2px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 12px 2px var(--color-primary-15);
 }
 
 /* Subtle dot matrix pattern for background details */

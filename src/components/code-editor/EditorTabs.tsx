@@ -117,7 +117,7 @@ export default function EditorTabs({
               onClick={() => onSelect(path)}
               className={`group flex shrink-0 items-center gap-1.5 px-3 py-2 text-[11px] font-mono cursor-pointer border-r border-white/5 whitespace-nowrap transition-all min-w-0 ${
                 isActive
-                  ? 'bg-white/10 text-slate-200 border-b-2 border-b-indigo-500'
+                  ? 'bg-white/10 text-slate-200 border-b-2 border-b-[#45969c]'
                   : 'text-slate-500 hover:bg-white/5 hover:text-slate-300'
               }`}
               title={path}

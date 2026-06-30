@@ -34,8 +34,9 @@ export default function Header() {
 
   return (
     <header className="h-14 px-3 sm:px-6 bg-slate-950 border-b border-white/5 flex items-center justify-between shrink-0 select-none z-10">
-      {/* Left: Back */}
+      {/* Left: Back + Logo */}
       <div className="flex items-center gap-2 min-w-0">
+        <img src="/logo.webp" alt="Dist2View" className="w-6 h-6 object-contain shrink-0 hidden sm:block" draggable="false" />
         <button
           onClick={() => actions.reset()}
           className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white transition-all py-1.5 px-2.5 sm:px-3.5 rounded-xl bg-white/2 border border-white/5 hover:bg-white/6 cursor-pointer font-semibold shadow-inner shrink-0"
@@ -55,7 +56,7 @@ export default function Header() {
             onClick={handleSwitchToCode}
             className={`px-2 py-1 sm:px-3 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${
               viewMode === 'code'
-                ? 'bg-indigo-600 text-white shadow-sm font-extrabold'
+                ? 'bg-[#45969c] text-white shadow-sm font-extrabold'
                 : 'text-slate-400 hover:text-white'
             }`}
             title={t('codeTab')}
@@ -67,7 +68,7 @@ export default function Header() {
             onClick={() => actions.setViewMode('preview')}
             className={`px-2 py-1 sm:px-3 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all duration-200 cursor-pointer ${
               viewMode === 'preview'
-                ? 'bg-indigo-600 text-white shadow-sm font-extrabold'
+                ? 'bg-[#45969c] text-white shadow-sm font-extrabold'
                 : 'text-slate-400 hover:text-white'
             }`}
             title={t('previewTab')}
@@ -84,7 +85,7 @@ export default function Header() {
           onClick={() => actions.setShowFileTree(!showFileTree)}
           className={`px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border cursor-pointer ${
             showFileTree
-              ? 'bg-indigo-600/10 border-indigo-500/20 text-indigo-300 font-bold'
+              ? 'bg-[#45969c]/10 border-[#45969c]/20 text-[#45969c] font-bold'
               : 'bg-white/2 border-white/5 text-slate-400 hover:text-slate-200'
           }`}
           title={t('toggleExplorer')}
@@ -103,7 +104,7 @@ export default function Header() {
           onClick={() => actions.setShowConsole(!showConsole)}
           className={`px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border cursor-pointer relative ${
             showConsole
-              ? 'bg-indigo-600/10 border-indigo-500/20 text-indigo-300 font-bold'
+              ? 'bg-[#45969c]/10 border-[#45969c]/20 text-[#45969c] font-bold'
               : 'bg-white/2 border-white/5 text-slate-400 hover:text-slate-200'
           }`}
           title={t('toggleConsole')}
@@ -112,7 +113,7 @@ export default function Header() {
           <Terminal className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">{t('console')}</span>
           {logs.length > 0 && (
-            <span className="h-4 min-w-4 px-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-[11px] font-bold text-indigo-300 font-mono flex items-center justify-center">
+            <span className="h-4 min-w-4 px-1 rounded-full bg-[#45969c]/20 border border-[#45969c]/30 text-[11px] font-bold text-[#45969c] font-mono flex items-center justify-center">
               {logs.length}
             </span>
           )}
