@@ -5,9 +5,10 @@ import {
   Globe,
   Loader2
 } from 'lucide-react';
-import { ConsoleLog } from '../types';
+import { ConsoleLog } from '../core/types';
 import { useI18n } from '../i18n/I18nContext';
-import { buildPreviewBaseUrl, buildSandboxUrl, IFRAME_SANDBOX_POLICY } from '../config';
+import { buildPreviewBaseUrl, buildSandboxUrl } from '../core/sandbox/url';
+import { IFRAME_SANDBOX_POLICY } from '../core/config';
 
 interface PreviewFrameProps {
   key?: any;

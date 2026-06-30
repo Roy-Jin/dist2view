@@ -3,10 +3,6 @@ import {
   Folder,
   FolderOpen,
   File,
-  FileCode,
-  Image,
-  FileJson,
-  FileText,
   ChevronRight,
   ChevronDown,
   Search,
@@ -15,12 +11,14 @@ import {
   FileCheck,
   X,
   Check,
-  Edit3,
   FolderPlus
 } from 'lucide-react';
-import { FileNode, VirtualFile } from '../types';
-import { buildFileTree, formatBytes } from '../utils';
+import { FileNode, VirtualFile } from '../core/types';
+import { buildFileTree } from '../core/file/tree';
+import { formatBytes } from '../utils/format';
 import { useI18n } from '../i18n/I18nContext';
+import FileIcon from './file-tree/FileIcon';
+import FileTreeContextMenu from './file-tree/FileTreeContextMenu';
 
 interface FileTreeProps {
   files: VirtualFile[];
@@ -164,30 +162,6 @@ export default function FileTree({
       isDirectory,
       visible: true
     });
-  };
-
-  // Helper to choose file icon
-  const getFileIcon = (path: string) => {
-    const ext = path.split('.').pop()?.toLowerCase() || '';
-    if (['html', 'htm'].includes(ext)) {
-      return <FileCode className="w-4 h-4 text-orange-400" id={`icon-html-${path}`} />;
-    }
-    if (['css'].includes(ext)) {
-      return <FileCode className="w-4 h-4 text-sky-400" id={`icon-css-${path}`} />;
-    }
-    if (['js', 'jsx', 'ts', 'tsx', 'mjs'].includes(ext)) {
-      return <FileCode className="w-4 h-4 text-amber-400" id={`icon-js-${path}`} />;
-    }
-    if (['json'].includes(ext)) {
-      return <FileJson className="w-4 h-4 text-purple-400" id={`icon-json-${path}`} />;
-    }
-    if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico'].includes(ext)) {
-      return <Image className="w-4 h-4 text-emerald-400" id={`icon-image-${path}`} />;
-    }
-    if (['md', 'txt'].includes(ext)) {
-      return <FileText className="w-4 h-4 text-slate-300" id={`icon-text-${path}`} />;
-    }
-    return <File className="w-4 h-4 text-slate-400" id={`icon-file-${path}`} />;
   };
 
   // Recursively render file tree
@@ -334,7 +308,7 @@ export default function FileTree({
           id={`file-node-${node.path}`}
         >
           <div className="flex items-center gap-2 min-w-0 flex-1">
-            {getFileIcon(node.path)}
+            <FileIcon path={node.path} />
             {isFileRenaming ? (
               <input
                 type="text"
@@ -485,100 +459,22 @@ export default function FileTree({
       </div>
 
       {/* Sleek Custom Right-Click Context Menu */}
-      {contextMenu.visible && (
-        <div
-          className="fixed bg-slate-950/90 border border-white/10 rounded-2xl py-1.5 w-44 shadow-2xl backdrop-blur-xl z-50 text-slate-300 font-sans text-[11px] animate-fade-in overflow-hidden"
-          style={{ top: contextMenu.y, left: contextMenu.x }}
-          onClick={() => setContextMenu(prev => ({ ...prev, visible: false }))}
-        >
-          {contextMenu.isDirectory ? (
-            <>
-              <div className="px-3 py-1 text-[9px] uppercase font-bold text-slate-500 font-mono tracking-wider border-b border-white/5 mb-1 select-none">
-                {t('folderActions')}
-              </div>
-              <button
-                onClick={() => {
-                  setIsCreatingInFolder(contextMenu.path);
-                  setCreatingType('file');
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
-              >
-                <Plus className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
-                <span>{t('createFile')}</span>
-              </button>
-              <button
-                onClick={() => {
-                  setIsCreatingInFolder(contextMenu.path);
-                  setCreatingType('folder');
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
-              >
-                <FolderPlus className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
-                <span>{t('newSubfolder')}</span>
-              </button>
-              <button
-                onClick={() => {
-                  setRenamingPath(contextMenu.path);
-                  setRenamingName(contextMenu.path.split('/').pop() || '');
-                  setRenameIsDirectory(true);
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
-              >
-                <Edit3 className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
-                <span>{t('renameFolder')}</span>
-              </button>
-              <div className="h-px bg-white/5 my-1" />
-              <button
-                onClick={() => {
-                  if (confirm(t('confirmDeleteFolder', { path: contextMenu.path }))) {
-                    onDeleteFolder?.(contextMenu.path);
-                  }
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-rose-600 hover:text-white text-rose-400 transition-colors flex items-center gap-2 cursor-pointer font-semibold"
-              >
-                <Trash2 className="w-3.5 h-3.5 text-rose-500 group-hover:text-white shrink-0" />
-                <span>{t('deleteFolder')}</span>
-              </button>
-            </>
-          ) : (
-            <>
-              <div className="px-3 py-1 text-[9px] uppercase font-bold text-slate-500 font-mono tracking-wider border-b border-white/5 mb-1 select-none">
-                {t('fileActions')}
-              </div>
-              <button
-                onClick={() => onSelectFile(contextMenu.path)}
-                className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
-              >
-                <FileText className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
-                <span>{t('openAndView')}</span>
-              </button>
-              <button
-                onClick={() => {
-                  setRenamingPath(contextMenu.path);
-                  setRenamingName(contextMenu.path.split('/').pop() || '');
-                  setRenameIsDirectory(false);
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-indigo-600 hover:text-white transition-colors flex items-center gap-2 cursor-pointer font-medium"
-              >
-                <Edit3 className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0" />
-                <span>{t('renameFile')}</span>
-              </button>
-              <div className="h-px bg-white/5 my-1" />
-              <button
-                onClick={() => {
-                  if (confirm(t('confirmDeleteFile', { path: contextMenu.path }))) {
-                    onDeleteFile(contextMenu.path);
-                  }
-                }}
-                className="w-full text-left px-3 py-2 hover:bg-rose-600 hover:text-white text-rose-400 transition-colors flex items-center gap-2 cursor-pointer font-semibold"
-              >
-                <Trash2 className="w-3.5 h-3.5 text-rose-500 group-hover:text-white shrink-0" />
-                <span>{t('deleteFile')}</span>
-              </button>
-            </>
-          )}
-        </div>
-      )}
+      <FileTreeContextMenu
+        contextMenu={contextMenu}
+        onClose={() => setContextMenu(prev => ({ ...prev, visible: false }))}
+        onSelectFile={onSelectFile}
+        onDeleteFile={onDeleteFile}
+        onDeleteFolder={(path) => onDeleteFolder?.(path)}
+        onStartCreate={(parentPath, type) => {
+          setIsCreatingInFolder(parentPath);
+          setCreatingType(type);
+        }}
+        onStartRename={(path, isDirectory) => {
+          setRenamingPath(path);
+          setRenamingName(path.split('/').pop() || '');
+          setRenameIsDirectory(isDirectory);
+        }}
+      />
     </div>
   );
 }

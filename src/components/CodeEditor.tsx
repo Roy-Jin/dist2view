@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { Save, Code, Image as ImageIcon, Sparkles, FileText } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import Editor, { OnMount, BeforeMount } from '@monaco-editor/react';
-import { VirtualFile } from '../types';
-import { getMimeType, formatBytes } from '../utils';
-import { useI18n } from '../i18n/I18nContext';
+import { VirtualFile } from '../core/types';
+import { getMimeType } from '../core/file/parser';
+import EmptyState from './code-editor/EmptyState';
+import EditorHeader from './code-editor/EditorHeader';
+import BinaryViewer from './code-editor/BinaryViewer';
+import EditorStatusBar from './code-editor/EditorStatusBar';
 
 // Custom theme: define once to avoid repeated defineTheme calls
 const THEME_NAME = 'dist2view-dark';
@@ -16,7 +19,6 @@ interface CodeEditorProps {
 }
 
 export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEditorProps) {
-  const { t } = useI18n();
   const [code, setCode] = useState('');
   const [isModified, setIsModified] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -172,106 +174,24 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
   };
 
   if (!file) {
-    return (
-      <div className="h-full flex flex-col items-center justify-center p-8 text-center select-none bg-slate-950/40 font-mono">
-        <div className="w-16 h-16 rounded-full bg-white/2 flex items-center justify-center border border-white/5 text-slate-400 mb-4 shadow-inner">
-          <Code className="w-8 h-8 stroke-1" />
-        </div>
-        <h3 className="text-sm font-bold text-slate-300">{t('noFileSelected')}</h3>
-        <p className="text-xs text-slate-400 mt-2 max-w-xs leading-relaxed">{t('selectFileToEdit')}</p>
-      </div>
-    );
+    return <EmptyState />;
   }
 
   const lines = code.split('\n');
 
   return (
     <div className="flex flex-col h-full bg-slate-950/20 overflow-hidden relative">
-      {/* Editor Sub-Header (Only visible if hideHeader is false) */}
-      {!hideHeader && (
-        <div className="px-4 py-3 bg-white/2 border-b border-white/5 flex items-center justify-between shrink-0 select-none">
-          <div className="flex items-center gap-2 min-w-0">
-            {file.isBinary ? (
-              <ImageIcon className="w-4 h-4 text-emerald-400 shrink-0" />
-            ) : (
-              <Code className="w-4 h-4 text-indigo-400 shrink-0" />
-            )}
-            <div className="min-w-0">
-              <span className="text-xs font-mono font-semibold text-slate-200 block truncate">{file.path}</span>
-              <span className="text-[10px] font-mono text-slate-500 block mt-0.5">
-                {formatBytes(file.size)} &bull; {getMimeType(file.path).split(';')[0]}
-              </span>
-            </div>
-          </div>
-
-          {!file.isBinary && (
-            <div className="flex items-center gap-2">
-              {isModified && (
-                <span className="text-[10px] text-amber-400 font-medium px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded-md flex items-center gap-1">
-                  <Sparkles className="w-2.5 h-2.5" /> {t('unsavedEdits')}
-                </span>
-              )}
-              <button
-                onClick={handleSaveClick}
-                disabled={!isModified}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all shadow-md ${isModified
-                  ? 'bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer'
-                  : 'bg-white/2 text-slate-500 cursor-not-allowed border border-white/5'
-                  }`}
-              >
-                <Save className="w-3.5 h-3.5" />
-                {t('saveAndSync')}
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Save Trigger Floating Bar (If we are hiding header but have modified code) */}
-      {hideHeader && !file.isBinary && isModified && (
-        <div className="absolute top-3 right-5 z-20 flex items-center gap-2 animate-fade-in">
-          <span className="text-[10px] text-amber-400 font-medium px-2 py-1 bg-slate-900/90 border border-amber-500/20 rounded-lg flex items-center gap-1 shadow-xl">
-            <Sparkles className="w-2.5 h-2.5 animate-pulse" /> {t('unsavedEdits')}
-          </span>
-          <button
-            onClick={handleSaveClick}
-            className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[11px] font-semibold flex items-center gap-1 transition-all shadow-lg hover:shadow-indigo-600/20 border border-indigo-500/30 cursor-pointer"
-          >
-            <Save className="w-3.5 h-3.5" />
-            {t('saveAndSync')}
-          </button>
-        </div>
-      )}
+      <EditorHeader
+        file={file}
+        isModified={isModified}
+        hideHeader={hideHeader}
+        onSave={handleSaveClick}
+      />
 
       {/* Editor Content Panel */}
       <div className="flex-1 overflow-auto relative bg-slate-950/40 custom-scrollbar flex min-h-0">
         {file.isBinary ? (
-          /* Binary File Viewer */
-          <div className="flex-1 h-full flex flex-col items-center justify-center p-8 bg-slate-900/20">
-            {imageUrl ? (
-              <div className="flex flex-col items-center justify-center gap-4">
-                <div className="relative group max-w-full max-h-87.5 overflow-hidden rounded-lg border border-slate-800 bg-slate-950 p-2 shadow-inner">
-                  <img
-                    src={imageUrl}
-                    alt={file.path}
-                    referrerPolicy="no-referrer"
-                    className="max-w-full max-h-75 object-contain rounded grid-pattern"
-                  />
-                </div>
-                <div className="text-center">
-                  <span className="text-[11px] bg-slate-900 border border-slate-800 text-emerald-400 font-mono px-3 py-1 rounded-full shadow-sm">
-                    {t('imageMode')}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center">
-                <FileText className="w-12 h-12 text-slate-600 mx-auto mb-3 stroke-1" />
-                <span className="text-xs text-slate-400 block font-semibold">{t('binaryDataView')}</span>
-                <span className="text-[10px] text-slate-500 block mt-1">{t('binaryDesc')}</span>
-              </div>
-            )}
-          </div>
+          <BinaryViewer file={file} imageUrl={imageUrl} />
         ) : (
           /* Monaco Editor */
           <div className="flex-1 h-full min-h-0 relative">
@@ -327,12 +247,12 @@ export default function CodeEditor({ file, onSave, hideHeader = false }: CodeEdi
         )}
       </div>
 
-      {/* Editor Status Bar */}
       {!file.isBinary && (
-        <div className="px-4 py-2.5 bg-slate-950/60 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-slate-500 shrink-0 select-none">
-          <span>Encoding: <b className="text-slate-400">UTF-8</b> &bull; Mode: <b className="text-indigo-400 uppercase">{getLanguage(file.path)}</b></span>
-          <span>Lines: <b className="text-slate-400">{lines.length}</b> &bull; Chars: <b className="text-slate-400">{code.length}</b></span>
-        </div>
+        <EditorStatusBar
+          language={getLanguage(file.path)}
+          lineCount={lines.length}
+          charCount={code.length}
+        />
       )}
     </div>
   );
