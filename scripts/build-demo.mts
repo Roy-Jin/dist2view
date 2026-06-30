@@ -1,4 +1,4 @@
-// Pack the demo/ directory into public/demo.zip
+// Pack the demo/ directory into public/_demo
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const demoDir = join(root, 'demo');
 const outDir = join(root, 'public');
-const outFile = join(outDir, 'demo.zip');
+const outFile = join(outDir, '_demo');
 
 async function walk(dir: string): Promise<string[]> {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -42,4 +42,4 @@ const zipped = zipSync(zipData);
 await mkdir(outDir, { recursive: true });
 await writeFile(outFile, zipped);
 
-console.log(`[demo:zip] Generated \"public/demo.zip\" (${allFiles.length} files, ${zipped.length} bytes)`);
+console.log(`[demo:zip] Generated "public/_demo" (${allFiles.length} files, ${zipped.length} bytes)`);

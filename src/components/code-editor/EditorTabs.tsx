@@ -92,10 +92,10 @@ export default function EditorTabs({
   return (
     <div className="relative min-w-0 bg-slate-950/60 border-b border-white/5 shrink-0 select-none">
       {showLeftFade && (
-        <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-slate-950/90 to-transparent pointer-events-none z-10" />
+        <div className="absolute left-0 top-0 bottom-0 w-6 bg-linear-to-r from-slate-950/90 to-transparent pointer-events-none z-10" />
       )}
       {showRightFade && (
-        <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-slate-950/90 to-transparent pointer-events-none z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-6 bg-linear-to-l from-slate-950/90 to-transparent pointer-events-none z-10" />
       )}
       <div
         ref={containerRef}
