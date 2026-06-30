@@ -10,9 +10,9 @@ const demoDir = join(root, 'demo');
 const outDir = join(root, 'public');
 const outFile = join(outDir, '_demo');
 
-async function walk(dir: string): Promise<string[]> {
+async function walk(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
-  const files: string[] = [];
+  const files = [];
   for (const entry of entries) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
@@ -31,7 +31,7 @@ if (allFiles.length === 0) {
   process.exit(1);
 }
 
-const zipData: Record<string, Uint8Array> = {};
+const zipData = {};
 for (const file of allFiles) {
   const rel = relative(demoDir, file).replace(/\\/g, '/');
   const buf = await readFile(file);
